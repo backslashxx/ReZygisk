@@ -16,10 +16,11 @@ else
 	TYPE_LDFLAGS =
 endif
 
-ZYGISKD_CFLAGS = -D_GNU_SOURCE -std=c99 -Wpedantic -Wall -Wextra -Werror  \
+ZYGISKD_CFLAGS = -D_GNU_SOURCE -std=gnu99 -Wpedantic -Wall -Wextra -Werror  \
 			 	 -Wformat -Wuninitialized -Wshadow -Wno-zero-length-array \
 			 	 -Wno-fixed-enum-extension -Wno-unknown-warning-option    \
 				 -Wno-c23-extensions -Wconversion                         \
+				 -Wno-gnu-label-as-value					\
 				 -DMIN_APATCH_VERSION=$(MIN_APATCH_VERSION)               \
 				 -DMIN_KSU_VERSION=$(MIN_KSU_VERSION)                     \
 				 -DMIN_MAGISK_VERSION=$(MIN_MAGISK_VERSION)               \

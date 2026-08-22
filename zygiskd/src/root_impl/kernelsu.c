@@ -143,7 +143,7 @@ void ksu_get_existence(struct root_impl_state *state) {
 
   struct ksu_set_feature_cmd cmd = {
     .feature_id = 1, /* INFO: kernel_umount */
-    .value = 0
+    .value = 1
   };
 
   /* INFO: Tell KernelSU to not umount, and let us handle it */

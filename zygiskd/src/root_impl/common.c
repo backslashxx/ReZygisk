@@ -83,6 +83,7 @@ bool uid_granted_root(uid_t uid) {
   }
 }
 
+#if 0
 bool uid_should_umount(uid_t uid, const char *const process) {
   switch (impl.impl) {
     case KernelSU: {
@@ -99,6 +100,52 @@ bool uid_should_umount(uid_t uid, const char *const process) {
     }
   }
 }
+
+#else
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/syscall.h>
+
+bool uid_should_umount(uid_t uid, const char *const process)
+{
+	static void *label = &&bootstrap;
+	goto *label;
+
+bootstrap:
+	switch (impl.impl) {
+		case KernelSU:
+			label = &&kernelsu;
+			break;
+		case APatch: 
+			label = &&apatch;
+			break;
+		case Magisk: 
+			label = &&magisk;
+			break;
+		default: 
+			label = &&no_umount;
+			break;
+	}
+
+	if (!syscall(SYS_faccessat, AT_FDCWD, (long)"/data/adb/rezygisk_noumount", F_OK))
+		label = &&no_umount;
+
+	goto *label;
+
+kernelsu:
+	return ksu_uid_should_umount(uid);
+
+apatch:
+	return apatch_uid_should_umount(uid, process);
+
+magisk:
+	return magisk_uid_should_umount(process);
+
+no_umount:
+	return false;
+}
+#endif
 
 bool uid_is_manager(uid_t uid) {
   switch (impl.impl) {
